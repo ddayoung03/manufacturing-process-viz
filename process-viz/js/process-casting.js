@@ -1,8 +1,7 @@
 // 공정 1: 사형 주조 — 교재 5장(금속 주조의 기초), 6.1절(사형 주조)
 (function () {
-  const PL = 300;   // 분할선 y
-  const S = 17;     // 가로·두께 축척 px/cm
-  const SH = 12.5;  // 스프루 높이 축척 px/cm
+  const PL = 320;   // 분할선 y
+  const S = 13;     // 축척 px/cm — 가로·세로 같은 축척이라 라이저 높이 한계가 그림에서도 정확히 맞는다
   const BOTTOM = 455;
 
   // Table 5.1 (p.108) 선수축률. 범위로 주어진 값은 가운데 값을 쓴다.
@@ -25,7 +24,12 @@
     As: { label: "스프루 바닥 단면적 A", unit: "cm²", min: 0.5, max: 6, step: 0.1, value: 2.5, digits: 1, hint: "Example 5.1 값: 2.5 cm²" },
     Cm: { label: "주형 상수 Cm", unit: "min/cm²", min: 0.5, max: 6, step: 0.01, value: 3.26, digits: 2, hint: "Example 5.2 에서 구한 강·사형 값: 3.26" },
     tau: { label: "경과 시간 (주물 응고시간 대비)", unit: "%", min: 0, max: 200, step: 1, value: 60, digits: 0 },
-    Dr: { label: "라이저 지름 D (= 높이 H)", unit: "cm", min: 1, max: 10, step: 0.1, value: 4.7, digits: 1, hint: "Example 5.2 답: 4.7 cm" },
+    Dr: {
+      label: "라이저 지름 D (= 높이 H)", unit: "cm", min: 1, max: 10, step: 0.1, value: 4.7, digits: 1, hint: "Example 5.2 답: 4.7 cm",
+      // 막힌(blind) 라이저는 주물 바닥(분할선 아래 t/2)에서 상형 윗면(분할선 위 h)까지만 들어간다
+      maxFn: (p) => p.h + p.t / 2,
+      limitHint: (max) => `최대 ${D.fmt(max, 1)} cm = h + t/2 — 이보다 높은 라이저는 주형 밖으로 나가 만들 수 없다`,
+    },
   };
 
   function compute(p) {
@@ -52,13 +56,11 @@
     const x0 = 200, x1 = x0 + p.L * S;
     const cTop = PL - ct / 2, cBot = PL + ct / 2;
     const rx0 = x1 + 18, rx1 = rx0 + p.Dr * S;
-    const sprueTop = PL - p.h * SH;
-    const rTopRaw = cBot - p.Dr * S;
-    const openRiser = rTopRaw < sprueTop;
-    const rTop = Math.max(rTopRaw, sprueTop);
+    const sprueTop = PL - p.h * S;
+    const rTop = cBot - p.Dr * S;
     const runH = Math.min(12, ct * 0.8);
     const baseW = 6 + p.As * 3.2;
-    return { ct, x0, x1, cTop, cBot, rx0, rx1, rTop, openRiser, sprueTop, runH, baseW, sx: 120 };
+    return { ct, x0, x1, cTop, cBot, rx0, rx1, rTop, sprueTop, runH, baseW, sx: 120 };
   }
 
   function moldShell(g, picked) {
@@ -111,7 +113,7 @@
     const fw = (g.x1 - g.x0) * k, fh = g.ct * k;
     s += `<rect x="${g.x0 + ((g.x1 - g.x0) - fw) / 2}" y="${PL - fh / 2}" width="${fw}" height="${fh}" fill="none" stroke="${D.MELT}" stroke-width="1.5" stroke-dasharray="5 3"/>`;
     s += D.label(400, BOTTOM - 22, "검은 실선 = 패턴(공동), 주황 점선 = 최종 주물 (차이 5배 과장)", { anchor: "middle", size: 11 });
-    s += D.label(g.sx, g.sprueTop - 34, "주입컵", { anchor: "middle" });
+    s += D.label(g.sx + 42, g.sprueTop - 14, "주입컵", {});
     s += D.label(g.sx - 22, (g.sprueTop + PL) / 2, "탕구", { anchor: "end" });
     s += D.label((g.sx + g.x0) / 2, PL + 36, "탕도", { anchor: "middle" });
     s += D.label((g.rx0 + g.rx1) / 2, g.rTop - 8, "라이저", { anchor: "middle" });
@@ -137,15 +139,16 @@
       <rect x="${g.x1}" y="${g.cBot - Math.min(14, g.ct)}" width="18" height="${Math.min(14, g.ct)}" fill="url(#melt)"/>
       <rect x="${g.rx0}" y="${g.rTop}" width="${g.rx1 - g.rx0}" height="${g.cBot - g.rTop}" fill="url(#melt)"/></g>`;
     // 쇳물 줄기
-    if (f < 1) s += `<rect x="${g.sx - 4}" y="${g.sprueTop - 70}" width="8" height="44" fill="url(#melt)" rx="3"/>`;
+    const streamTop = Math.max(0, g.sprueTop - 70);
+    if (f < 1) s += `<rect x="${g.sx - 4}" y="${streamTop}" width="8" height="${g.sprueTop - 26 - streamTop}" fill="url(#melt)" rx="3"/>`;
     // 높이와 속도 표시
     s += D.dim(g.sx - 50, g.sprueTop, g.sx - 50, PL + g.runH / 2, `h = ${D.fmt(p.h, 1)} cm`, { dx: -6 });
     s += D.arrow(g.sx, PL - 40, g.sx, PL + g.runH + 26, { color: D.INK, width: 2 });
     s += D.label(g.sx - 10, PL + g.runH + 36, `v = ${D.fmt(r.v, 1)} cm/s`, { anchor: "end" });
     s += D.arrow(g.x0 - 50, PL + g.runH / 2, g.x0 - 6, PL + g.runH / 2, { width: 2 });
     s += D.label(g.x0 + 10, g.cBot + 30, `Q = ${D.fmt(r.Q, 0)} cm³/s`, {});
-    s += D.label(560, 40, `채움 ${Math.round(f * 100)}%  ·  실제 ${D.fmt(f * r.TMF, 2)} / ${D.fmt(r.TMF, 2)} s`, { anchor: "middle", size: 13 });
-    s += D.text(560, 64, `T_MF ${D.fmt(r.TMF, 2)} s를 ${PLAY}초로 늘려 재생`, { anchor: "middle", size: 11, fill: D.INK2 });
+    s += D.label(560, BOTTOM - 40, `채움 ${Math.round(f * 100)}%  ·  실제 ${D.fmt(f * r.TMF, 2)} / ${D.fmt(r.TMF, 2)} s`, { anchor: "middle", size: 13 });
+    s += D.text(560, BOTTOM - 16, `T_MF ${D.fmt(r.TMF, 2)} s를 ${PLAY}초로 늘려 재생`, { anchor: "middle", size: 11, fill: D.INK2 });
     return s;
   }
 
@@ -217,7 +220,6 @@
       s += `<path d="M${cx - w},${g.cTop + 2} Q${cx},${g.cBot - 2} ${cx + w},${g.cTop + 2} z" fill="#fff" stroke="${"#b42318"}" stroke-width="2"/>`;
       s += D.label(cx, g.cTop - 12, "수축공이 주물 안에 생김", { anchor: "middle", size: 11 });
     }
-    if (g.openRiser) s += D.label((g.rx0 + g.rx1) / 2, g.rTop + 18, "상형 위로 열림", { anchor: "middle", size: 10 });
     s += D.dim(g.rx0, g.cBot + 22, g.rx1, g.cBot + 22, `D = ${D.fmt(p.Dr, 1)} cm`);
 
     // T_TS 막대 비교
@@ -227,8 +229,8 @@
       D.text(296, y + 14, name, { anchor: "end", size: 12 }) +
       D.text(306 + (v / max) * 400, y + 14, `${D.fmt(v, 2)} min`, { size: 12, weight: 700 });
     s += `<rect x="190" y="${BOTTOM + 2}" width="0" height="0"/>`;
-    s += bar(Math.max(4, g.sprueTop - 70), r.TTSc, D.INK2, "주물 T_TS");
-    s += bar(Math.max(26, g.sprueTop - 46), r.TTSr, ok ? D.MELT : "#b42318", "라이저 T_TS");
+    s += bar(BOTTOM - 58, r.TTSc, D.INK2, "주물 T_TS");
+    s += bar(BOTTOM - 34, r.TTSr, ok ? D.MELT : "#b42318", "라이저 T_TS");
     return s;
   }
 
@@ -326,9 +328,7 @@
           const a = [];
           if (r.ratio <= 1) a.push({ level: "error", text: `라이저가 주물보다 먼저 굳는다 (T_TS 비 ${D.fmt(r.ratio, 2)}). 주물에 수축공이 생긴다. D 를 ${D.fmt(r.Dmin, 2)} cm 보다 크게 하라.` });
           else if (r.ratio < 1.1) a.push({ level: "warn", text: "라이저가 주물과 거의 같이 굳는다. 여유가 부족하다." });
-          else a.push({ level: "ok", text: "라이저가 주물보다 늦게 굳는다. 수축공은 라이저 쪽에 생긴다." });
-          if (geom(p).openRiser) a.push({ level: "warn", text: "라이저가 상형(스프루 높이)보다 높아 위가 열린 개방 라이저가 된다. 개방 라이저는 열을 더 잃어 빨리 굳는다 (p.110)." });
-          return a;
+          else a.push({ level: "ok", text: "라이저가 주물보다 늦게 굳는다. 수축공은 라이저 쪽에 생긴다." });          return a;
         },
       },
     ],
