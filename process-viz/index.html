@@ -20,21 +20,31 @@
   </header>
 
   <main class="layout">
-    <section class="stage-wrap" aria-label="공정 단면도">
-      <div class="stage-head">
-        <h2 id="stepTitle"></h2>
-        <button class="play" id="playBtn" type="button" aria-pressed="true">일시정지</button>
-      </div>
-      <svg id="stage" viewBox="0 0 800 480" role="img" aria-labelledby="stepTitle"></svg>
-      <p class="term" id="termBox" hidden></p>
+    <div class="main-col">
+      <section class="stage-wrap" aria-label="공정 단면도">
+        <ol class="steps" id="stepRail" aria-label="단계"></ol>
+        <div class="stage-head">
+          <h2 id="stepTitle"></h2>
+          <button class="play" id="playBtn" type="button" aria-pressed="true">일시정지</button>
+        </div>
+        <svg id="stage" viewBox="0 0 800 480" role="img" aria-labelledby="stepTitle"></svg>
+        <p class="term" id="termBox" hidden></p>
+        <div class="step-nav">
+          <button type="button" id="prevBtn">이전 단계</button>
+          <span id="stepCount"></span>
+          <button type="button" id="nextBtn">다음 단계</button>
+        </div>
+      </section>
 
-      <ol class="steps" id="stepRail" aria-label="단계"></ol>
-      <div class="step-nav">
-        <button type="button" id="prevBtn">이전 단계</button>
-        <span id="stepCount"></span>
-        <button type="button" id="nextBtn">다음 단계</button>
-      </div>
-    </section>
+      <section class="source" aria-label="교재 근거와 설명">
+        <div class="source-cite">
+          <h3>교재 근거</h3>
+          <ul class="cites" id="cites"></ul>
+          <div id="formulas"></div>
+        </div>
+        <div class="source-explain" id="explain"></div>
+      </section>
+    </div>
 
     <aside class="panel">
       <section class="controls" aria-label="파라미터">
@@ -47,12 +57,6 @@
         <h3>계산 결과</h3>
         <div id="alerts"></div>
         <dl id="readout"></dl>
-      </section>
-
-      <section class="source" aria-label="교재 근거와 설명">
-        <h3>교재 근거</h3>
-        <ul class="cites" id="cites"></ul>
-        <div id="explain"></div>
       </section>
     </aside>
   </main>

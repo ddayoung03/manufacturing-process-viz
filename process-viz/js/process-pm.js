@@ -273,7 +273,7 @@
 
   window.PROCESSES = window.PROCESSES || [];
   window.PROCESSES.push({
-    id: "pm", name: "분말 야금", en: "Powder metallurgy", chapter: "10.2절 · 부록 A10",
+    id: "pm", color: "#9c6b30", name: "분말 야금", en: "Powder metallurgy", chapter: "10.2절 · 부록 A10",
     params, compute,
     steps: [
       {
