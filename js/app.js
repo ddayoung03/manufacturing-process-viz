@@ -68,8 +68,26 @@
       }
       return `<div class="ctl"><label for="c_${k}"><span>${d.label}</span><output id="o_${k}">${fmtParam(d, p[k])}</output></label>
         <input id="c_${k}" data-k="${k}" type="range" min="${d.min}" max="${d.max}" step="${d.step}" value="${p[k]}">
-        ${d.hint ? `<span class="hint">${d.hint}</span>` : ""}</div>`;
+        ${d.hint ? `<span class="hint">${d.hint}</span>` : ""}
+        ${d.maxFn ? `<span class="hint limit" id="l_${k}"></span>` : ""}</div>`;
     }).join("") || `<p class="hint">이 단계는 도면의 부품을 눌러 살펴보는 단계다.</p>`;
+  }
+
+  // 다른 파라미터에 따라 물리적으로 가능한 최대값이 바뀌는 슬라이더(maxFn)를 그 값에서 막는다
+  function applyLimits() {
+    const p = params();
+    for (const [k, d] of Object.entries(proc().params)) {
+      if (!d.maxFn) continue;
+      const lim = Math.floor(d.maxFn(p) / d.step + 1e-9) * d.step;
+      const max = Math.round(Math.min(d.max, lim) * 1e6) / 1e6;
+      if (p[k] > max) p[k] = max;
+      const input = $("c_" + k);
+      if (!input) continue;
+      input.max = max;
+      input.value = p[k];
+      $("o_" + k).textContent = fmtParam(d, p[k]);
+      $("l_" + k).textContent = d.limitHint(max);
+    }
   }
   el.controls.addEventListener("input", (e) => {
     const k = e.target.dataset.k;
@@ -139,6 +157,7 @@
   });
 
   function update() {
+    applyLimits();
     lastR = proc().compute(params());
     renderReadout(lastR);
     drawStage();
