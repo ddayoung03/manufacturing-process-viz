@@ -6,7 +6,9 @@
 
 ## 실행 방법
 
-설치할 것이 없다. 빌드 과정도 없다.
+온라인 데모: https://ddayoung03.github.io/manufacturing-process-viz/
+
+로컬 실행은 설치할 것이 없다. 빌드 과정도 없다.
 
 1. zip 을 푼다.
 2. `index.html` 을 더블클릭해 Chrome · Edge · Firefox 로 연다.
