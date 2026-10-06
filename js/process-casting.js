@@ -236,7 +236,7 @@
 
   window.PROCESSES = window.PROCESSES || [];
   window.PROCESSES.push({
-    id: "casting", name: "사형 주조", en: "Sand casting", chapter: "5장 · 6.1절",
+    id: "casting", color: "#d9480f", name: "사형 주조", en: "Sand casting", chapter: "5장 · 6.1절",
     params, compute, terms,
     steps: [
       {

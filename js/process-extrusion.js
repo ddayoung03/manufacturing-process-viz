@@ -108,7 +108,7 @@
   // u/v = ξ − 3r·ξ(1−ξ),  r = Qb/Qd  (평판 사이 드래그 유동 + 압력 유동 중첩)
   function profile(p, r, t, withBack) {
     const rr = withBack ? r.ratio : 0;
-    const x0 = 140, x1 = 680, yTop = 70, yBot = 250, H = yBot - yTop;
+    const x0 = 200, x1 = 740, yTop = 70, yBot = 250, H = yBot - yTop;
     const scale = 180;
     let s = "";
     s += `<rect x="${x0}" y="${yTop - 18}" width="${x1 - x0}" height="18" fill="url(#steel)" stroke="${D.INK}"/>`;
@@ -121,7 +121,7 @@
     s += D.dim(x0 + 12, yTop, x0 + 12, yBot, `dc = ${D.fmt(p.dc, 1)} mm`, { dx: 46 });
 
     // 속도 화살표와 분포 곡선
-    const ax = 250;
+    const ax = 310;
     const pts = [];
     for (let i = 0; i <= 10; i++) {
       const xi = i / 10;
@@ -141,7 +141,7 @@
 
     // 추적 입자: 각 높이에서 u 로 이동
     // 추적 입자는 화살표와 겹치지 않게 x = 470 ~ 670 구간에서만 움직인다
-    const tx0 = 470, W = x1 - 10 - tx0;
+    const tx0 = 530, W = x1 - 10 - tx0;
     for (let i = 1; i < 10; i++) {
       const xi = i / 10;
       const u = xi - 3 * rr * xi * (1 - xi);
@@ -151,7 +151,7 @@
         s += `<circle cx="${px}" cy="${yBot - xi * H}" r="3.5" fill="${D.INK}" opacity="0.65"/>`;
       }
     }
-    s += D.text(560, yBot + 40, "점: 같은 높이 용융체의 이동", { anchor: "middle", size: 11, fill: D.INK2 });
+    s += D.text(630, yBot + 40, "점: 같은 높이 용융체의 이동", { anchor: "middle", size: 11, fill: D.INK2 });
     return s;
   }
 
@@ -253,7 +253,7 @@
 
   window.PROCESSES = window.PROCESSES || [];
   window.PROCESSES.push({
-    id: "extrusion", name: "플라스틱 압출", en: "Polymer extrusion", chapter: "8.1–8.2절",
+    id: "extrusion", color: "#1971c2", name: "플라스틱 압출", en: "Polymer extrusion", chapter: "8.1–8.2절",
     params, compute, terms,
     steps: [
       {

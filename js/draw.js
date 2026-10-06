@@ -49,7 +49,7 @@
       const w = [...String(s)].reduce((a, c) => a + (/[ㄱ-힝]/.test(c) ? size * 1.0 : c === " " ? size * 0.3 : size * 0.6), 0) + 10;
       const anchor = o.anchor || "start";
       const bx = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w : x;
-      return `<rect x="${bx}" y="${y - size - 2}" width="${w}" height="${size + 8}" rx="3" fill="#fff" fill-opacity="0.92" stroke="${D.INK}" stroke-width="0.6"/>` +
+      return `<rect x="${bx}" y="${y - size - 2}" width="${w}" height="${size + 8}" rx="4" fill="#fff" fill-opacity="0.94" stroke="${D.INK}" stroke-opacity="0.22" stroke-width="1"/>` +
         D.text(anchor === "middle" ? x : anchor === "end" ? x - 5 : x + 5, y + 1, s, { size, anchor, weight: o.weight || 500 });
     },
 
@@ -69,7 +69,13 @@
       const { x, y, w, h } = box;
       const sx = (v) => x + ((v - o.xMin) / (o.xMax - o.xMin)) * w;
       const sy = (v) => y + h - ((v - o.yMin) / (o.yMax - o.yMin)) * h;
-      let s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff" stroke="${D.INK2}" stroke-width="0.8"/>`;
+      let s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff"/>`;
+      // 옅은 보조선 4×4 + 축선 (테두리 상자 대신)
+      for (let i = 1; i < 4; i++) {
+        s += `<line x1="${x + (w * i) / 4}" y1="${y}" x2="${x + (w * i) / 4}" y2="${y + h}" stroke="#e9ecef"/>`;
+        s += `<line x1="${x}" y1="${y + (h * i) / 4}" x2="${x + w}" y2="${y + (h * i) / 4}" stroke="#e9ecef"/>`;
+      }
+      s += `<path d="M${x},${y} L${x},${y + h} L${x + w},${y + h}" fill="none" stroke="${D.INK2}" stroke-width="1.2"/>`;
       s += D.text(x + w / 2, y + h + 30, o.xLabel, { size: 12, anchor: "middle", fill: D.INK2 });
       s += `<text x="${x - 34}" y="${y + h / 2}" font-size="12" fill="${D.INK2}" text-anchor="middle" transform="rotate(-90 ${x - 34} ${y + h / 2})">${esc(o.yLabel)}</text>`;
       (o.xTicks || []).forEach((t) => {

@@ -26,7 +26,7 @@
   // ---------- 탭 ----------
   function renderTabs() {
     el.tabs.innerHTML = PROCS.map((p, i) =>
-      `<button type="button" role="tab" aria-selected="${i === state.pi}" data-i="${i}">${p.name}<small>${p.en} · ${p.chapter}</small></button>`
+      `<button type="button" role="tab" aria-selected="${i === state.pi}" data-i="${i}" style="--dot:${p.color}"><span class="dot" aria-hidden="true"></span><span>${p.name}<small>${p.en} · ${p.chapter}</small></span></button>`
     ).join("");
   }
   el.tabs.addEventListener("click", (e) => {
@@ -38,7 +38,7 @@
   function renderRail() {
     const cur = state.step[state.pi];
     el.rail.innerHTML = proc().steps.map((s, i) =>
-      `<li><button type="button" data-s="${i}" ${i === cur ? 'aria-current="step"' : ""} class="${i < cur ? "done" : ""}"><b>${i + 1}</b>${s.short}</button></li>`
+      `<li class="${i <= cur ? "passed" : ""}"><button type="button" data-s="${i}" ${i === cur ? 'aria-current="step"' : ""} class="${i < cur ? "done" : ""}"><b>${i + 1}</b>${s.short}</button></li>`
     ).join("");
     el.prev.disabled = cur === 0;
     el.next.disabled = cur === proc().steps.length - 1;
@@ -120,8 +120,8 @@
     const s = step();
     el.cites.innerHTML = s.cites.map((c) => `<li>${c}</li>`).join("");
     const list = (a) => `<ul>${a.map((x) => `<li>${x}</li>`).join("")}</ul>`;
+    $("formulas").innerHTML = (s.formulas || []).map((f) => `<div class="formula">${f[0]}<span>${f[1]}</span></div>`).join("");
     el.explain.innerHTML =
-      (s.formulas || []).map((f) => `<div class="formula">${f[0]}<span>${f[1]}</span></div>`).join("") +
       `<h4>현상</h4><p>${s.phenomenon}</p>` +
       `<h4>핵심 변수</h4>${list(s.variables)}` +
       `<h4>가정</h4>${list(s.assumptions)}` +
