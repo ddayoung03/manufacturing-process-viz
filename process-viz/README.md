@@ -6,7 +6,9 @@
 
 ## 실행 방법
 
-온라인 데모: https://ddayoung03.github.io/manufacturing-process-viz/
+- 온라인 데모: https://ddayoung03.github.io/manufacturing-process-viz/
+- 소스 저장소: https://github.com/ddayoung03/manufacturing-process-viz
+- 작성자 GitHub: https://github.com/ddayoung03
 
 로컬 실행은 설치할 것이 없다. 빌드 과정도 없다.
 
@@ -81,6 +83,17 @@ node tests/formulas.test.js
 - 압출: 평판 근사, 점도 일정, 누설 유동 무시. 다이 스웰 비 rs 는 교재 값이 없어 직접 입력한다.
 - 분말: 블렌딩은 교재에 식이 없어 정성적으로만 보여 준다. 밀도-압력 곡선, 냉각 곡선, 소결 사이클의 온도축은 정성적이다.
 - 그림의 수축량 등은 보이도록 과장한 부분이 있으며, 그림 안에 그렇게 적어 두었다.
+
+## 개발 도구
+
+| 구분 | 이름 | 쓴 곳 |
+|---|---|---|
+| AI 도구 | Claude Code (Claude Opus 5.5) | 교재 근거 추출, 구현, 검증 — 자세한 기록은 별도 제출한 AI 사용 기록 |
+| Skill | `frontend-design` (Anthropic 공식 플러그인) | 화면 디자인 방향(색·글꼴·레이아웃)과 심미성 다듬기 기준 |
+| MCP 서버 | Playwright MCP | 브라우저에서 단계별 화면 캡처, 오류 입력 시험, 휴대폰 화면 폭 확인 |
+| CLI | GitHub CLI (`gh`) | 저장소 생성, GitHub Pages 배포 |
+| CLI | Node.js | 공식 검증 테스트 실행 |
+| CLI | ffmpeg | 시연 영상 압축 |
 
 ## 파일 구조
 
