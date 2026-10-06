@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>공정 단면 시뮬레이터</title>
+  <meta name="description" content="사형 주조 · 플라스틱 압출 · 분말 야금을 단계별로 조작하며 Groover 교재 공식으로 계산하는 웹 시각화">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <h1>공정 단면 시뮬레이터</h1>
+      <p>기계공작법 · Groover, <i>Introduction to Manufacturing Processes</i> (Wiley, 2012) 기준</p>
+    </div>
+    <nav class="process-tabs" id="processTabs" aria-label="공정 선택"></nav>
+  </header>
+
+  <main class="layout">
+    <section class="stage-wrap" aria-label="공정 단면도">
+      <div class="stage-head">
+        <h2 id="stepTitle"></h2>
+        <button class="play" id="playBtn" type="button" aria-pressed="true">일시정지</button>
+      </div>
+      <svg id="stage" viewBox="0 0 800 480" role="img" aria-labelledby="stepTitle"></svg>
+      <p class="term" id="termBox" hidden></p>
+
+      <ol class="steps" id="stepRail" aria-label="단계"></ol>
+      <div class="step-nav">
+        <button type="button" id="prevBtn">이전 단계</button>
+        <span id="stepCount"></span>
+        <button type="button" id="nextBtn">다음 단계</button>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <section class="controls" aria-label="파라미터">
+        <h3>파라미터</h3>
+        <div id="controls"></div>
+        <button type="button" class="reset" id="resetBtn">교재 예제 값으로 되돌리기</button>
+      </section>
+
+      <section class="readout" aria-label="계산 결과" aria-live="polite">
+        <h3>계산 결과</h3>
+        <div id="alerts"></div>
+        <dl id="readout"></dl>
+      </section>
+
+      <section class="source" aria-label="교재 근거와 설명">
+        <h3>교재 근거</h3>
+        <ul class="cites" id="cites"></ul>
+        <div id="explain"></div>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    키보드: ← → 단계 이동, 1·2·3 공정 전환. 모든 계산은 교재 식을 그대로 쓰며 단위는 각 슬라이더 옆에 표시한다.
+  </footer>
+
+  <script src="js/formulas.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/process-casting.js"></script>
+  <script src="js/process-extrusion.js"></script>
+  <script src="js/process-pm.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
