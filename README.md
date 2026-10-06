@@ -106,5 +106,8 @@ js/process-casting.js    공정 1: 사형 주조
 js/process-extrusion.js  공정 2: 플라스틱 압출
 js/process-pm.js         공정 3: 분말 야금
 js/app.js                탭 · 단계 · 슬라이더 · 패널 제어
+assets/pnu-signature.png 부산대학교 시그니처 (아래 참고)
 tests/formulas.test.js   교재 예제와 공식 결과 비교
 ```
+
+부산대학교 시그니처는 학교 공식 홈페이지(상징 & UI > UI)에서 받은 원본 PNG 이며, 학교 CI 규정에 따라 색과 비율을 바꾸지 않고 크기만 줄여 썼다. 이 자료는 부산대학교 교직원·학생의 교육·행정 목적에 한해 제공된다: https://www.pusan.ac.kr/kor/CMS/Contents/Contents.do?mCode=MN154
